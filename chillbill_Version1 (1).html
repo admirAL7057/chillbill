@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChillBill</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' xmlns='http://www.w3.org/2000/svg'%3E%3Crect rx='8' width='32' height='32' fill='%239F8772'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23C8DBBE' font-family='Arial' font-weight='bold'%3E%F0%9F%92%B3%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --c-bg: #EDE4E0;
+      --c-bg-light: #EDE4E0;
+      --c-bg-strong: #EDE4E0;
+      --c-accent1: #C8DBBE;
+      --c-accent1-dark: #A4CE8A;
+      --c-accent1-med: #7CB662;
+      --c-accent2: #9F8772;
+      --c-accent2-dark: #665A48;
+      --c-green: #A4CE8A;
+      --c-green-dark: #7CB662;
+      --c-brown: #9F8772;
+      --c-brown-dark: #665A48;
+      --c-white: #fff;
+      --c-black: #222;
+      --radius: 20px;
+      --shadow: 0 4px 24px #665a4820;
+      --font: 'Segoe UI', 'Arial', sans-serif;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: var(--font);
+      background: var(--c-bg);
+      color: var(--c-brown-dark);
+      min-height: 100vh;
+    }
+    #app-container {
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      background: var(--c-bg-light);
+      border-radius: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 0;
+      flex: 0 0 auto;
+      padding-top: 30px;
+      background: var(--c-bg);
+      box-shadow: 0 2px 12px #665a4822;
+      border-bottom: 2px solid var(--c-accent2-dark);
+    }
+    .logo-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 0;
+    }
+    #chillbill-logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: var(--c-brown);
+      box-shadow: 0 1px 12px var(--c-brown-dark)44;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #chillbill-logo-emoji {
+      font-size: 2.25em;
+      color: var(--c-accent1);
+      filter: drop-shadow(0 1px 2px #665A48aa);
+    }
+    header h1 {
+      margin: 0 0 12px;
+      font-size: 2.8em;
+      letter-spacing: 2px;
+      font-weight: 900;
+      color: var(--c-brown-dark);
+      text-shadow: 0 3px 24px #c8dbbe33;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 0.5em;
+      background: var(--c-bg-light);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px #c8dbbe22;
+      padding: 10px 0 0 0;
+    }
+    nav button {
+      background: var(--c-white);
+      color: var(--c-brown-dark);
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 24px;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 10px #c8dbbe44;
+      letter-spacing: 1px;
+      transition: background 0.18s, color 0.15s, box-shadow 0.18s;
+    }
+    nav button.active, nav button:hover {
+      background: var(--c-accent1);
+      color: var(--c-brown-dark);
+      box-shadow: 0 4px 24px #c8dbbeaa;
+    }
+    .clearall-btn {
+      background: var(--c-brown-dark);
+      color: var(--c-white);
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 24px;
+      font-size: 1.08em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 0;
+      margin-left: 8px;
+      box-shadow: 0 2px 18px #665a4860;
+      letter-spacing: 1px;
+      transition: background 0.16s, color 0.16s;
+    }
+    .clearall-btn:hover {
+      background: var(--c-accent1-dark);
+      color: var(--c-brown-dark);
+    }
+    main {
+      flex: 1 1 auto;
+      width: 100vw;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    .screen {
+      display: none;
+      width: 100vw;
+      background: var(--c-bg-light);
+      padding: 36px 0 0 0;
+      box-sizing: border-box;
+      border-radius: 0;
+      min-height: 72vh;
+    }
+    .screen.active { display: block; }
+    .screen h2 {
+      margin-top: 0;
+      font-size: 2em;
+      color: var(--c-brown-dark);
+      font-weight: 900;
+      margin-bottom: 22px;
+      text-shadow: 0 2px 20px #c8dbbe44;
+      letter-spacing: 1.5px;
+    }
+    .home-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 45px;
+    }
+    .primary {
+      background: var(--c-green);
+      color: var(--c-brown-dark);
+      border: none;
+      border-radius: 24px;
+      padding: 12px 36px;
+      font-size: 1.15em;
+      font-weight: 900;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      text-shadow: 0 2px 16px #fff3;
+      box-shadow: 0 2px 16px #c8dbbe77;
+      transition: background 0.16s, box-shadow 0.15s;
+    }
+    .primary:hover {
+      background: var(--c-accent1-dark);
+      color: var(--c-brown-dark);
+      box-shadow: 0 4px 32px #c8dbbe66;
+    }
+    .invite-btn {
+      margin-top: 10px;
+      margin-bottom: 18px;
+      background: var(--c-green-dark);
+      color: var(--c-brown-dark);
+      border: none;
+      border-radius: 22px;
+      padding: 10px 30px;
+      font-size: 1.08em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s, box-shadow 0.15s;
+      box-shadow: 0 2px 18px #c8dbbe77;
+    }
+    .invite-btn:hover {
+      background: var(--c-accent1);
+      color: var(--c-brown-dark);
+    }
+    .copied-message {
+      color: var(--c-green-dark);
+      font-size: 1.05em;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      display: none;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    input, select {
+      display: block;
+      width: 320px;
+      max-width: 95vw;
+      margin: 12px 0 18px 0;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      font-size: 1.09em;
+      background: var(--c-white);
+      color: var(--c-brown-dark);
+      font-weight: 600;
+      box-shadow: 0 1px 12px #c8dbbe44;
+      transition: box-shadow 0.14s;
+    }
+    input:focus, select:focus {
+      outline: 2px solid var(--c-green);
+      box-shadow: 0 2px 16px #c8dbbe44;
+    }
+    input[type="checkbox"] { width: auto; margin-right: 5px; }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    #group-list li, #meetup-list .meetup, #history-list .history-item {
+      background: var(--c-white);
+      color: var(--c-brown-dark);
+      margin-bottom: 10px;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 600;
+      box-shadow: 0 1px 12px #c8dbbe33;
+      font-size: 1.1em;
+    }
+    .avatar {
+      font-size: 1.5em;
+      margin-right: 12px;
+      vertical-align: middle;
+      border-radius: 50%;
+      background: var(--c-green);
+      padding: 4px 11px 4px 11px;
+      display: inline-block;
+      width: 38px;
+      text-align: center;
+      color: var(--c-brown-dark);
+      box-shadow: 0 2px 8px #c8dbbe33;
+    }
+    .current-user { background: var(--c-high) !important; color: var(--c-brown-dark) !important; }
+    .tooltip {
+      border-bottom: 1px dotted #888;
+      cursor: help;
+      font-size: 1em;
+      margin-left: 5px;
+    }
+    .split-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .split-row input[type="text"] {
+      width: 140px;
+      margin: 0;
+    }
+    .split-amount {
+      color: var(--c-green-dark);
+      font-weight: bold;
+      margin-left: 6px;
+      font-size: 1.08em;
+      letter-spacing: 1px;
+    }
+    .split-paid { margin-left: 10px; accent-color: var(--c-green-dark); width: 20px; height: 20px; vertical-align: middle; }
+    .split-label { margin-right: 5px; }
+    .split-balance-box {
+      margin-top: 24px;
+      background: var(--c-accent1);
+      color: var(--c-brown-dark);
+      border-radius: 16px;
+      padding: 15px 24px;
+      font-weight: 900;
+      font-size: 1.25em;
+      letter-spacing: 1px;
+      box-shadow: 0 1px 14px #c8dbbe55;
+      display: inline-block;
+    }
+    .summary-sheet {
+      margin-top: 32px;
+      background: var(--c-green);
+      color: var(--c-brown-dark);
+      border-radius: 16px;
+      padding: 18px 24px;
+      font-weight: 900;
+      box-shadow: 0 1px 14px #c8dbbe33;
+      font-size: 1.13em;
+    }
+    .reset-btn {
+      background: var(--c-white);
+      color: var(--c-brown-dark);
+      border: 2px solid var(--c-green-dark);
+      border-radius: 18px;
+      font-weight: 900;
+      padding: 10px 26px;
+      margin-top: 18px;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s;
+    }
+    .reset-btn:hover { background: var(--c-green-dark); color: var(--c-bg); }
+    .exp-currency {
+      width: 72px;
+      display: inline-block;
+      margin-right: 12px;
+      margin-bottom: 0px;
+      background: var(--c-accent1);
+      color: var(--c-brown-dark);
+      font-weight: 900;
+    }
+    @media (max-width: 600px) {
+      .screen { padding: 15px 0 0 0; }
+      input, select { width: 98vw; }
+      .split-row input[type="text"] { width: 38vw; }
+      .summary-sheet { padding: 9px 3vw; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container">
+    <header>
+      <div class="logo-row">
+        <div id="chillbill-logo">
+          <span id="chillbill-logo-emoji">💳</span>
+        </div>
+        <h1>ChillBill</h1>
+      </div>
+      <nav>
+        <button onclick="showScreen('home')" id="nav-home">Home</button>
+        <button onclick="showScreen('groups')" id="nav-groups">Groups</button>
+        <button onclick="showScreen('meetups')" id="nav-meetups">Meetups</button>
+        <button onclick="showScreen('expenses')" id="nav-expenses">Expenses</button>
+        <button onclick="showScreen('history')" id="nav-history">History</button>
+        <button class="clearall-btn" onclick="resetAll()">Clear All</button>
+      </nav>
+    </header>
+    <main>
+      <section id="home" class="screen">
+        <div class="home-content">
+          <h2>Welcome!</h2>
+          <p style="font-size:1.25em; margin-bottom:28px;">
+            Organize your meetups, invite friends, and split expenses.<br>
+            <strong>Enter your name to get started:</strong>
+          </p>
+          <input type="text" id="username" placeholder="Your Name" title="This will be your nickname and avatar.">
+          <button class="primary" onclick="mockLogin()">Continue</button>
+        </div>
+      </section>
+      <section id="groups" class="screen">
+        <h2>Groups</h2>
+        <ul id="group-list"></ul>
+        <input type="text" id="new-group-name" placeholder="New Group Name" title="Choose a unique group name.">
+        <button class="primary" onclick="addGroup()">Add Group</button>
+        <button class="invite-btn" onclick="copyGroupInviteUrl()" title="Copy link to invite others to this group">Copy Group Invite Link</button>
+        <div id="group-invite-copied" class="copied-message">Copied!</div>
+      </section>
+      <section id="meetups" class="screen">
+        <h2>Schedule a Meetup</h2>
+        <button class="invite-btn" onclick="copyInviteUrl()">Send Invites</button>
+        <div id="copied-message" class="copied-message">Copied!</div>
+        <form id="meetup-form" onsubmit="addMeetup(event)">
+          <select id="meetup-group" required title="Pick which group this meetup is for."></select>
+          <input type="text" id="meetup-location" placeholder="Location" required>
+          <input type="datetime-local" id="meetup-datetime" required>
+          <input type="text" id="meetup-desc" placeholder="Description (optional)">
+          <button class="primary" type="submit">Create Meetup</button>
+        </form>
+        <div id="meetup-list"></div>
+      </section>
+      <section id="expenses" class="screen">
+        <h2>Split an Expense</h2>
+        <form id="split-form" onsubmit="saveSplitExpense(event)">
+          <label for="expense-meetup-choice">Meetup</label>
+          <select id="expense-meetup-choice" onchange="renderSplitRows()" required>
+            <option value="">Select Meetup</option>
+          </select>
+          <label for="currency">Currency</label>
+          <select id="currency" class="exp-currency" onchange="updateSplitAmounts()" title="Choose currency">
+            <option value="₹">₹</option>
+            <option value="$">$</option>
+            <option value="€">€</option>
+          </select>
+          <label for="people-count">How many people? <span class="tooltip" title="How many people to split the bill with?">?</span></label>
+          <select id="people-count" onchange="renderSplitRows()">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+          <div>
+            <label>
+              <input type="checkbox" id="custom-split-checkbox" onchange="renderSplitRows()" title="Enable custom split amounts"> Custom split
+            </label>
+          </div>
+          <div id="split-rows"></div>
+          <label for="split-total">Total Amount Spent</label>
+          <input type="number" id="split-total" min="0" step="0.01" placeholder="Total amount" oninput="updateSplitAmounts()" title="Enter the total bill">
+          <button class="primary" type="submit">Save Expense</button>
+        </form>
+        <div class="split-balance-box" id="split-balance-box" style="display:none;">
+          Balance left: <span id="split-balance-left">0.00</span>
+        </div>
+        <div id="split-balance"></div>
+        <div class="summary-sheet" id="summary-sheet"></div>
+      </section>
+      <section id="history" class="screen">
+        <h2>Meetup & Expense History</h2>
+        <div id="history-list"></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    function saveAll() {
+      localStorage.setItem('chillbill-data', JSON.stringify({
+        user, groups, meetups, expenses, history, currency
+      }));
+    }
+    function loadAll() {
+      try {
+        const d = JSON.parse(localStorage.getItem('chillbill-data'));
+        if (d) {
+          user = d.user || null;
+          groups = d.groups || [];
+          meetups = d.meetups || [];
+          expenses = d.expenses || [];
+          history = d.history || [];
+          currency = d.currency || '₹';
+        }
+      } catch {}
+    }
+    function resetAll() {
+      if (!confirm("Are you sure you want to clear ALL data? This cannot be undone.")) return;
+      user = null; groups = []; meetups = []; expenses = []; history = []; currency = "₹";
+      saveAll();
+      location.reload();
+    }
+    let user = null;
+    let groups = [];
+    let meetups = [];
+    let expenses = [];
+    let history = [];
+    let currency = "₹";
+    let splitPaidState = [];
+    let currentMeetupIdx = "";
+
+    function showScreen(screen) {
+      document.querySelectorAll('.screen').forEach($el => $el.classList.remove('active'));
+      document.getElementById(screen).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('nav-' + screen).classList.add('active');
+      if (screen === 'groups') renderGroups();
+      if (screen === 'meetups') {renderMeetupGroups(); renderMeetups();}
+      if (screen === 'history') renderHistory();
+      if (screen === 'expenses') {
+        renderMeetupExpenseSelect();
+        renderSplitRows();
+        renderSplitBalance();
+        updateSummary();
+      }
+      window.location.hash = screen;
+      saveAll();
+    }
+    function avatarFor(name) {
+      if (!name) return "👤";
+      const emojis = ["🦁","🐯","🦓","🦊","🦉","🦄","🦄","🐢","🐬","🦜","🐧","🦔","🐼","🐨","🦉","🐒","🐻","🐱","🐭","🐸"];
+      let code = name.charCodeAt(0);
+      return emojis[code % emojis.length];
+    }
+    function mockLogin() {
+      const name = document.getElementById('username').value.trim();
+      if (!name) return alert("Please enter your name!");
+      user = { name };
+      saveAll();
+      showScreen('groups');
+    }
+    function renderGroups() {
+      const ul = document.getElementById('group-list');
+      ul.innerHTML = '';
+      groups.forEach((g, i) => {
+        let li = document.createElement('li');
+        li.innerHTML = `<span class="avatar${g.members.includes(user?.name) ? ' current-user' : ''}">${avatarFor(g.name)}</span> <b>${g.name}</b> (${g.members.join(', ') || 'no members yet'})`;
+        ul.appendChild(li);
+      });
+    }
+    function addGroup() {
+      const name = document.getElementById('new-group-name').value.trim();
+      if (!name) return alert("Please enter a group name!");
+      if (groups.some(g => g.name.toLowerCase() === name.toLowerCase())) {
+        alert("Group name already exists!");
+        return;
+      }
+      groups.push({ name, members: [user.name] });
+      document.getElementById('new-group-name').value = '';
+      saveAll();
+      renderGroups();
+      renderMeetupGroups();
+    }
+    function copyGroupInviteUrl() {
+      if (!groups.length) return alert("Add a group first!");
+      let groupName = groups[groups.length-1].name;
+      let url = window.location.origin + window.location.pathname + `#groups?group=${encodeURIComponent(groupName)}`;
+      if (window.location.protocol === 'file:') url = window.location.href.replace(/(#.*)?$/, `#groups?group=${encodeURIComponent(groupName)}`);
+      navigator.clipboard.writeText(url).then(() => {
+        document.getElementById('group-invite-copied').style.display = 'block';
+        setTimeout(()=>{document.getElementById('group-invite-copied').style.display='none';},1300);
+      });
+    }
+    function renderMeetupGroups() {
+      const sel = document.getElementById('meetup-group');
+      sel.innerHTML = '';
+      groups.forEach((g, i) => {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = g.name;
+        sel.appendChild(opt);
+      });
+    }
+    function addMeetup(e) {
+      e.preventDefault();
+      const groupIdx = document.getElementById('meetup-group').value;
+      const location = document.getElementById('meetup-location').value;
+      const datetime = document.getElementById('meetup-datetime').value;
+      const desc = document.getElementById('meetup-desc').value;
+      if (!groups[groupIdx]) return alert("Pick a group!");
+      const group = groups[groupIdx];
+      const participants = Array.from(group.members);
+      meetups.push({ group: group.name, location, datetime, desc, participants });
+      document.getElementById('meetup-form').reset();
+      saveAll();
+      renderMeetups();
+      addToHistory(`Scheduled meetup for ${group.name} at ${location} on ${datetime}`);
+    }
+    function renderMeetups() {
+      const div = document.getElementById('meetup-list');
+      div.innerHTML = '';
+      meetups.forEach((m, i) => {
+        let d = document.createElement('div');
+        d.className = 'meetup';
+        d.innerHTML = `<strong>${m.group}</strong> @ ${m.location} <br>
+          <span style="color:#00b894">${new Date(m.datetime).toLocaleString()}</span>
+          <br> ${m.desc || ''}`;
+        div.appendChild(d);
+      });
+    }
+    function copyInviteUrl() {
+      let url;
+      if (window.location.protocol === 'file:') {
+        url = window.location.href.replace(/(#.*)?$/, '#meetups');
+      } else {
+        url = window.location.origin + window.location.pathname + '#meetups';
+      }
+      navigator.clipboard.writeText(url).then(() => {
+        document.getElementById('copied-message').style.display = 'block';
+        setTimeout(()=>{document.getElementById('copied-message').style.display='none';},1300);
+      });
+    }
+    function renderMeetupExpenseSelect() {
+      const sel = document.getElementById('expense-meetup-choice');
+      sel.innerHTML = '<option value="">Select Meetup</option>';
+      meetups.forEach((m, idx) => {
+        let label = `${m.group} @ ${m.location} (${new Date(m.datetime).toLocaleString()})`;
+        let opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = label;
+        sel.appendChild(opt);
+      });
+      // auto-select last used
+      if (currentMeetupIdx !== "" && sel.options[currentMeetupIdx+1]) {
+        sel.selectedIndex = Number(currentMeetupIdx)+1;
+      }
+    }
+    function renderSplitRows() {
+      const sel = document.getElementById('expense-meetup-choice');
+      const meetupIdx = sel.value === "" ? null : Number(sel.value);
+      currentMeetupIdx = meetupIdx;
+      let participantList = [];
+      if (meetupIdx !== null && meetups[meetupIdx]) {
+        participantList = meetups[meetupIdx].participants || [];
+      }
+      const count = parseInt(document.getElementById('people-count').value, 10) || 0;
+      const custom = document.getElementById('custom-split-checkbox').checked;
+      const container = document.getElementById('split-rows');
+      container.innerHTML = '';
+      splitPaidState = [];
+      for (let i = 0; i < count; i++) {
+        splitPaidState.push(false);
+        container.appendChild(splitRow(i, custom, participantList[i] || ""));
+      }
+      updateSplitAmounts();
+      updateBalanceBox();
+    }
+    function splitRow(i, custom, presetName) {
+      const row = document.createElement('div');
+      row.className = 'split-row';
+      row.innerHTML = `
+        <span class="avatar">${avatarFor(document.getElementById('split-name-'+i)?.value || presetName || '')}</span>
+        <input type="text" id="split-name-${i}" placeholder="Person ${i + 1} Name" value="${presetName||""}" oninput="updateSplitAmounts()" title="Enter participant name">
+        <span class="split-amount" id="split-amt-${i}"></span>
+        ${custom?`<input type="number" min="0" id="split-custom-${i}" placeholder="Custom" style="width:80px" oninput="updateSplitAmounts()" title="Custom amount">`:''}
+        <label class="split-label"><input type="checkbox" id="split-paid-${i}" class="split-paid" onchange="togglePaid(${i})">Paid</label>
+      `;
+      return row;
+    }
+    function updateSplitAmounts() {
+      const count = parseInt(document.getElementById('people-count').value, 10) || 0;
+      const total = parseFloat(document.getElementById('split-total').value) || 0;
+      const curr = document.getElementById('currency').value;
+      currency = curr;
+      saveAll();
+      const custom = document.getElementById('custom-split-checkbox').checked;
+      let share = count > 0 ? (total / count) : 0;
+      let sumCustom = 0;
+      for (let i = 0; i < count; i++) {
+        let amt = share;
+        if (custom) {
+          amt = parseFloat(document.getElementById('split-custom-'+i)?.value)||0;
+          sumCustom += amt;
+        }
+        document.getElementById('split-amt-' + i).textContent = total ? `Pays: ${curr}${amt.toFixed(2)}` : '';
+      }
+      document.getElementById('split-balance-left').textContent = custom ? (total-sumCustom).toFixed(2) : (total-share*count).toFixed(2);
+      updateBalanceBox();
+    }
+    function togglePaid(idx) { splitPaidState[idx] = document.getElementById('split-paid-' + idx).checked; updateBalanceBox(); }
+    function updateBalanceBox() {
+      const count = parseInt(document.getElementById('people-count').value, 10) || 0;
+      const total = parseFloat(document.getElementById('split-total').value) || 0;
+      const custom = document.getElementById('custom-split-checkbox').checked;
+      let paidSum = 0;
+      for (let i = 0; i < count; i++) {
+        let amt = custom ? (parseFloat(document.getElementById('split-custom-'+i)?.value)||0) : (count>0?total/count:0);
+        if (document.getElementById('split-paid-' + i)?.checked) paidSum += amt;
+      }
+      const balance = total - paidSum;
+      const box = document.getElementById('split-balance-box');
+      const left = document.getElementById('split-balance-left');
+      if (count > 0 && total > 0) {
+        box.style.display = 'inline-block';
+        left.textContent = balance.toFixed(2);
+      } else {
+        box.style.display = 'none';
+        left.textContent = '0.00';
+      }
+    }
+    function saveSplitExpense(e) {
+      e.preventDefault();
+      const meetupIdx = document.getElementById('expense-meetup-choice').value;
+      if (!meetups[meetupIdx]) return alert("Please select a Meetup!");
+      const count = parseInt(document.getElementById('people-count').value, 10) || 0;
+      if (count < 1) return alert("Please select how many people!");
+      const names = [];
+      const paidArr = [];
+      const custom = document.getElementById('custom-split-checkbox').checked;
+      let customArr = [];
+      for (let i = 0; i < count; i++) {
+        const val = (document.getElementById('split-name-' + i).value || '').trim();
+        if (!val) return alert(`Please enter a name for person ${i+1}`);
+        if (names.includes(val)) return alert("Duplicate names are not allowed!");
+        names.push(val);
+        paidArr.push(document.getElementById('split-paid-' + i).checked);
+        if (custom) customArr.push(parseFloat(document.getElementById('split-custom-'+i)?.value)||0);
+      }
+      const total = parseFloat(document.getElementById('split-total').value);
+      if (!total || total <= 0) return alert("Please enter a valid total amount!");
+      let share = count > 0 ? (total / count) : 0;
+      let split = {};
+      let sumCustom = 0;
+      names.forEach((n,i) => {
+        let amt = custom ? customArr[i] : share;
+        sumCustom += amt;
+        split[n] = {amt: amt, paid: paidArr[i]};
+      });
+      if (custom && Math.abs(sumCustom-total) > 0.01) {
+        return alert("Sum of custom amounts doesn't match total bill!");
+      }
+      expenses.push({ meetupIdx:Number(meetupIdx), names, split, total, currency: currency });
+      saveAll();
+      renderSplitBalance();
+      renderSplitRows();
+      updateSummary();
+      addToHistory(`Expense of ${currency}${total.toFixed(2)} for meetup "${meetups[meetupIdx].group}@${meetups[meetupIdx].location}" split among: ${names.join(', ')}`);
+    }
+    function renderSplitBalance() {
+      const div = document.getElementById('split-balance');
+      div.innerHTML = '';
+      if (!expenses.length) return;
+      // Only show expenses for current meetup
+      const sel = document.getElementById('expense-meetup-choice');
+      const filterMeetupIdx = sel && sel.value !== "" ? Number(sel.value) : null;
+      const filtered = filterMeetupIdx !== null
+        ? expenses.filter(e => e.meetupIdx === filterMeetupIdx)
+        : expenses;
+      if (!filtered.length) return;
+      div.innerHTML = '<h3 style="color:var(--c-brown-dark);margin-bottom:10px;">Expenses</h3>';
+      filtered.slice().reverse().forEach(e => {
+        div.innerHTML += `<div style="margin-bottom:10px;background:var(--c-white);color:var(--c-brown-dark);padding:12px 16px;border-radius:13px;">
+          Total: ${e.currency||currency}${e.total.toFixed(2)}<br>
+          ${Object.entries(e.split).map(([name, obj]) =>
+            `<span class="avatar${user?.name===name?' current-user':''}">${avatarFor(name)}</span>` +
+            `<b>${name}</b>: ${e.currency||currency}${obj.amt.toFixed(2)} ` +
+            `<span style="color:${obj.paid ? 'var(--c-green-dark)':'var(--c-brown-dark)'};font-weight:bold;">${obj.paid ? '✓ Paid' : '✗ Not Paid'}</span>`
+          ).join('<br>')}
+        </div>`;
+      });
+    }
+    function addToHistory(msg) {
+      history.push({ when: new Date(), msg });
+      saveAll();
+    }
+    function renderHistory() {
+      const div = document.getElementById('history-list');
+      div.innerHTML = '';
+      history.slice().reverse().forEach(h => {
+        let d = document.createElement('div');
+        d.className = 'history-item';
+        d.innerHTML = `<span style="color:var(--c-green-dark);">${new Date(h.when).toLocaleString()}</span><br>${h.msg}`;
+        div.appendChild(d);
+      });
+    }
+    function updateSummary() {
+      // Only use expenses from current meetup
+      const sel = document.getElementById('expense-meetup-choice');
+      const filterMeetupIdx = sel && sel.value !== "" ? Number(sel.value) : null;
+      let balances = {};
+      const filtered = filterMeetupIdx !== null
+        ? expenses.filter(e => e.meetupIdx === filterMeetupIdx)
+        : expenses;
+      filtered.forEach(e => {
+        Object.entries(e.split).forEach(([p, obj]) => {
+          if (!balances[p]) balances[p]=0;
+          balances[p] -= obj.amt;
+          if (obj.paid) balances[p] += obj.amt;
+        });
+      });
+      const div = document.getElementById('summary-sheet');
+      let people = Object.keys(balances);
+      let lines = [];
+      people.forEach(p => {
+        if (balances[p] > 0.009) lines.push(`<span class="avatar${user?.name===p?' current-user':''}">${avatarFor(p)}</span> <b>${p}</b> is owed <span style="color:var(--c-green-dark);">${currency}${balances[p].toFixed(2)}</span>`);
+        else if (balances[p] < -0.009) lines.push(`<span class="avatar${user?.name===p?' current-user':''}">${avatarFor(p)}</span> <b>${p}</b> owes <span style="color:var(--c-brown-dark);">${currency}${(-balances[p]).toFixed(2)}</span>`);
+        else lines.push(`<span class="avatar${user?.name===p?' current-user':''}">${avatarFor(p)}</span> <b>${p}</b> is settled up`);
+      });
+      div.innerHTML = `<b>Summary (who owes whom):</b><br>${lines.join('<br>')}`;
+    }
+    window.onload = () => {
+      loadAll();
+      document.getElementById('currency').value = currency || "₹";
+      let hash = (window.location.hash || '').replace('#', '');
+      if (hash.startsWith('groups?group=')) {
+        let groupName = decodeURIComponent(hash.split('=')[1]);
+        if (!groups.some(g => g.name === groupName)) {
+          groups.push({ name: groupName, members: [user?.name||""] });
+          saveAll();
+        }
+        showScreen('groups');
+      } else if (['groups','meetups','expenses','history'].includes(hash)) {
+        showScreen(hash);
+      } else {
+        showScreen('home');
+      }
+    };
+    window.onhashchange = () => {
+      let hash = (window.location.hash || '').replace('#', '');
+      if (hash.startsWith('groups?group=')) {
+        let groupName = decodeURIComponent(hash.split('=')[1]);
+        if (!groups.some(g => g.name === groupName)) {
+          groups.push({ name: groupName, members: [user?.name||""] });
+          saveAll();
+        }
+        showScreen('groups');
+      } else if (['groups','meetups','expenses','history','home'].includes(hash)) {
+        showScreen(hash);
+      }
+    };
+  </script>
+</body>
+</html>
